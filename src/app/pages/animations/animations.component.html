@@ -1,0 +1,4 @@
+<button (click)="toggle()">{{isOpen ? 'Close Me' : 'Open Me'}}</button>
+<div [@toggleBox]="isOpen ? 'open' : 'closed'" class="custom-style">
+  <p>The box is now {{ isOpen ? 'Open' : 'Closed' }}!</p>
+</div>

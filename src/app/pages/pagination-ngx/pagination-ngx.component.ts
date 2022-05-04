@@ -9,6 +9,7 @@ import { PaginationInstance } from 'ngx-pagination';
 })
 export class PaginationNgxComponent implements OnInit {
   collection: any = [];
+  resetCollection: any = [];
   // page: number = 1;
   currentPage: number = 1;
   perPage: number = 5;
@@ -102,7 +103,22 @@ export class PaginationNgxComponent implements OnInit {
       .then((response) => response.json())
       .then((json) => {
         this.collection = json;
+        this.resetCollection = json;
         console.log(this.collection);
+        let min = 99999999999;
+        let max = -1;
+        for (let i = 0; i < this.collection.length; i++) {
+          const prod = this.collection[i];
+          if (min > prod.price) {
+            min = prod.price;
+          }
+          if (max < prod.price) {
+            max = prod.price;
+          }
+        }
+
+        this.minPrice = Math.trunc(min);
+        this.maxPrice = Math.ceil(max);
         // this.collection = this.collection.filter( e => e.price > 0)
         // this.config.currentPage = page;
         // this.collection = json;
@@ -199,50 +215,41 @@ export class PaginationNgxComponent implements OnInit {
   }
 
   filterPrices() {
+    this.collection = this.resetCollection.map((a:any) => a);
     if (this.minPrice > 0 && this.maxPrice > 0) {
       let newValue = this.makeNewValue(this.minPrice, this.maxPrice);
-      // let options: any = {};
-      // let temps = []
-      let temp = JSON.stringify(`{'P': [${newValue || ''}]}`);
 
-      temp = temp.replace(/["]/g, '');
+      // temp = temp.replace(/["]/g, '');
 
-      temp = temp.replace(/[']/g, '"');
+      // temp = temp.replace(/[']/g, '"');
 
-      if (this.opTemp.length == 0) {
-        this.opTemp.push(temp);
-      } else {
-        this.opTemp.forEach((el: any, index: number) => {
-          let [key] = Object.keys(JSON.parse(el));
-          if (key.includes('P')) {
-            this.opTemp.splice(index, 1, temp);
-          } else {
-            this.opTemp.push(temp);
-          }
-        });
-      }
+      // if (this.opTemp.length == 0) {
+      //   this.opTemp.push(temp);
+      // } else {
+      //   this.opTemp.forEach((el: any, index: number) => {
+      //     let [key] = Object.keys(JSON.parse(el));
+      //     if (key.includes('P')) {
+      //       this.opTemp.splice(index, 1, temp);
+      //     } else {
+      //       this.opTemp.push(temp);
+      //     }
+      //   });
+      // }
 
-      console.log(this.opTemp);
+      // console.log(this.opTemp);
       let options: any = {}
 
-      for (const [keys, values] of Object.entries(this.opTemp)) {
-        console.log({ keys, values });
-        console.log(JSON.parse(values))
-        let valores = JSON.parse( values )
-        if (valores.hasOwnProperty('P')) {
-          
-        }
-        // if (condition) {
+      // for (const [keys, values] of Object.entries(this.opTemp)) {
+      //   console.log({ keys, values });
+      //   console.log(JSON.parse(values))
+      //   let valores = JSON.parse( values )
+      //   if (valores.hasOwnProperty('P')) {
 
-        // }
-
-        // for (const [ llaves, valores ] of Object.entries(values) ) {
-        //   console.log({ llaves, valores });
-
-        // }
-      }
-      return;
-      // options.search = ;
+      //   }
+      // }
+      // let temp = JSON.stringify(`{'P':[${newValue || ''}]}`);
+      // console.log({ temp });
+      // options.search = temp;
 
       if (this.sortModelValue !== '') {
         options.orderby = this.sortModelValue;
